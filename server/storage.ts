@@ -30,6 +30,7 @@ export interface IStorage {
   // Founder operations
   createFounder(founder: InsertFounder): Promise<Founder>;
   getFounderById(id: string): Promise<Founder | undefined>;
+  getFoundersByCompanyId(companyId: string): Promise<Founder[]>;
   updateFounder(id: string, founder: Partial<InsertFounder>): Promise<Founder>;
   
   // Portfolio Company operations
@@ -81,6 +82,15 @@ export class DatabaseStorage implements IStorage {
   async getFounderById(id: string): Promise<Founder | undefined> {
     const [founder] = await db.select().from(founders).where(eq(founders.id, id));
     return founder || undefined;
+  }
+
+  async getFoundersByCompanyId(companyId: string): Promise<Founder[]> {
+    const foundersList = await db
+      .select()
+      .from(founders)
+      .where(eq(founders.companyId, companyId));
+    
+    return foundersList;
   }
 
   async updateFounder(id: string, founder: Partial<InsertFounder>): Promise<Founder> {

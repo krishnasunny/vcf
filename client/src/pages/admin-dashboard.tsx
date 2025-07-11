@@ -7,6 +7,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useAuth } from "@/contexts/AuthContext";
 import { ChartLine, Building, DollarSign, TrendingUp, Percent, Plus } from "lucide-react";
 import { CreateCompanyModal } from "@/components/company/CreateCompanyModal";
+import { ViewCompanyModal } from "@/components/company/ViewCompanyModal";
+import { EditCompanyModal } from "@/components/company/EditCompanyModal";
 import { CompanyTable } from "@/components/company/CompanyTable";
 
 export default function AdminDashboard() {
@@ -191,35 +193,17 @@ export default function AdminDashboard() {
         onOpenChange={setShowCreateModal}
       />
       
-      {/* View Company Modal */}
-      <Dialog open={showViewModal} onOpenChange={setShowViewModal}>
-        <DialogContent className="sm:max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>View Company Details</DialogTitle>
-          </DialogHeader>
-          <div className="p-6">
-            <p className="text-slate-600">
-              Company view functionality will be implemented here.
-              Company ID: {selectedCompanyId}
-            </p>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <ViewCompanyModal
+        open={showViewModal}
+        onOpenChange={setShowViewModal}
+        companyId={selectedCompanyId}
+      />
       
-      {/* Edit Company Modal */}
-      <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
-        <DialogContent className="sm:max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Edit Company</DialogTitle>
-          </DialogHeader>
-          <div className="p-6">
-            <p className="text-slate-600">
-              Company edit functionality will be implemented here.
-              Company ID: {selectedCompanyId}
-            </p>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <EditCompanyModal
+        open={showEditModal}
+        onOpenChange={setShowEditModal}
+        companyId={selectedCompanyId}
+      />
     </div>
   );
 }

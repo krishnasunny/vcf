@@ -22,7 +22,7 @@ import {
   updateRevenue, 
   deleteRevenue 
 } from "./controllers/revenueController";
-import { updateFounder } from "./controllers/founderController";
+import { getFounderByCompany, updateFounder } from "./controllers/founderController";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth routes
@@ -40,6 +40,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/my-company", authenticateToken, requireRole("PORTFOLIO_COMPANY"), getMyCompany);
   
   // Founder routes
+  app.get("/api/companies/:companyId/founder", authenticateToken, requireAdminOrOwnCompany, getFounderByCompany);
   app.put("/api/founders/:id", authenticateToken, requireAdminOrOwnCompany, updateFounder);
 
   // Fundraising routes
