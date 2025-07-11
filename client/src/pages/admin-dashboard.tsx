@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { ChartLine, Building, DollarSign, TrendingUp, Percent, Plus } from "lucide-react";
 import { CreateCompanyModal } from "@/components/company/CreateCompanyModal";
@@ -11,6 +12,9 @@ import { CompanyTable } from "@/components/company/CompanyTable";
 export default function AdminDashboard() {
   const { user, logout } = useAuth();
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(null);
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   const { data: companies, isLoading } = useQuery({
     queryKey: ["/api/companies"],
@@ -22,6 +26,16 @@ export default function AdminDashboard() {
     totalInvestment: "$12.5M",
     activeFundraising: 8,
     portfolioIRR: "24.3%",
+  };
+
+  const handleViewCompany = (companyId: string) => {
+    setSelectedCompanyId(companyId);
+    setShowViewModal(true);
+  };
+
+  const handleEditCompany = (companyId: string) => {
+    setSelectedCompanyId(companyId);
+    setShowEditModal(true);
   };
 
   return (
@@ -142,7 +156,12 @@ export default function AdminDashboard() {
                   </Button>
                 </div>
                 
-                <CompanyTable companies={companies || []} isLoading={isLoading} />
+                <CompanyTable 
+                  companies={companies || []} 
+                  isLoading={isLoading} 
+                  onViewCompany={handleViewCompany}
+                  onEditCompany={handleEditCompany}
+                />
               </TabsContent>
               
               <TabsContent value="fundraising" className="space-y-4">
@@ -171,6 +190,36 @@ export default function AdminDashboard() {
         open={showCreateModal}
         onOpenChange={setShowCreateModal}
       />
+      
+      {/* View Company Modal */}
+      <Dialog open={showViewModal} onOpenChange={setShowViewModal}>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>View Company Details</DialogTitle>
+          </DialogHeader>
+          <div className="p-6">
+            <p className="text-slate-600">
+              Company view functionality will be implemented here.
+              Company ID: {selectedCompanyId}
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Edit Company Modal */}
+      <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Edit Company</DialogTitle>
+          </DialogHeader>
+          <div className="p-6">
+            <p className="text-slate-600">
+              Company edit functionality will be implemented here.
+              Company ID: {selectedCompanyId}
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

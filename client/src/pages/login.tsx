@@ -34,6 +34,8 @@ export default function Login() {
   });
 
   const onSubmit = async (data: LoginForm) => {
+    if (isLoading) return;
+    
     setIsLoading(true);
     setError("");
     
@@ -41,6 +43,9 @@ export default function Login() {
       const authData = await apiLogin(data.email, data.password);
       saveAuth(authData);
       login(authData.user);
+      
+      // Small delay to ensure auth context is updated
+      await new Promise(resolve => setTimeout(resolve, 100));
       
       // Redirect based on user role
       if (authData.user.role === "ADMIN") {

@@ -18,9 +18,11 @@ interface Company {
 interface CompanyTableProps {
   companies: Company[];
   isLoading: boolean;
+  onViewCompany?: (companyId: string) => void;
+  onEditCompany?: (companyId: string) => void;
 }
 
-export const CompanyTable = ({ companies, isLoading }: CompanyTableProps) => {
+export const CompanyTable = ({ companies, isLoading, onViewCompany, onEditCompany }: CompanyTableProps) => {
   if (isLoading) {
     return (
       <div className="space-y-4">
@@ -120,10 +122,18 @@ export const CompanyTable = ({ companies, isLoading }: CompanyTableProps) => {
               </TableCell>
               <TableCell>
                 <div className="flex space-x-2">
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => onViewCompany?.(company.id)}
+                  >
                     View
                   </Button>
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => onEditCompany?.(company.id)}
+                  >
                     Edit
                   </Button>
                 </div>
