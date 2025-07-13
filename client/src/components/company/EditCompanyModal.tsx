@@ -188,7 +188,7 @@ export const EditCompanyModal = ({ open, onOpenChange, companyId }: EditCompanyM
   if (isCompanyLoading || isFounderLoading) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-4xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-6xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit Company</DialogTitle>
           </DialogHeader>
@@ -207,7 +207,7 @@ export const EditCompanyModal = ({ open, onOpenChange, companyId }: EditCompanyM
   if (!company) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-4xl">
+        <DialogContent className="sm:max-w-6xl">
           <DialogHeader>
             <DialogTitle>Edit Company</DialogTitle>
           </DialogHeader>
@@ -221,7 +221,7 @@ export const EditCompanyModal = ({ open, onOpenChange, companyId }: EditCompanyM
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-4xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-6xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit Company: {company.legalName}</DialogTitle>
         </DialogHeader>

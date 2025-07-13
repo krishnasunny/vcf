@@ -186,7 +186,7 @@ export const CompanyProfileForm = ({ company, founder }: CompanyProfileFormProps
                 <Input
                   id="founder.firstName"
                   {...form.register("founder.firstName")}
-                  placeholder="John"
+                  placeholder="First name"
                 />
                 {form.formState.errors.founder?.firstName && (
                   <p className="text-sm text-red-600">{form.formState.errors.founder.firstName.message}</p>
@@ -197,7 +197,7 @@ export const CompanyProfileForm = ({ company, founder }: CompanyProfileFormProps
                 <Input
                   id="founder.lastName"
                   {...form.register("founder.lastName")}
-                  placeholder="Smith"
+                  placeholder="Last name"
                 />
                 {form.formState.errors.founder?.lastName && (
                   <p className="text-sm text-red-600">{form.formState.errors.founder.lastName.message}</p>

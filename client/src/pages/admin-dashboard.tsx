@@ -47,10 +47,11 @@ export default function AdminDashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center mr-3">
-                <ChartLine className="text-white h-5 w-5" />
+              <div className="w-16 h-10 bg-black rounded-lg flex items-center justify-center mr-3 p-1">
+                {/* <ChartLine className="text-white h-5 w-5" /> */}
+                <img src="https://expertdojo.com/wp-content/uploads/2022/05/ED_Logo-White.png"/>
               </div>
-              <h1 className="text-xl font-bold text-slate-800">VC Portfolio Manager</h1>
+              <h1 className="text-xl font-bold text-slate-800">Expert Dojo</h1>
             </div>
             
             <div className="flex items-center space-x-4">

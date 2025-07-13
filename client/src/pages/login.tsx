@@ -64,11 +64,13 @@ export default function Login() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-slate-100">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mx-auto mb-4">
-            <ChartLine className="text-white h-6 w-6" />
+          <div className="w-14 h-14 bg-black rounded-lg flex items-center justify-center mx-auto mb-4 p-1">
+            {/* <ChartLine className="text-white h-6 w-6" /> */}
+            <img src="https://expertdojo.com/wp-content/uploads/2022/05/ED_Logo-White.png"/>
+
           </div>
           <CardTitle className="text-2xl font-bold text-slate-800">
-            VC Portfolio Manager
+          Expert Dojo
           </CardTitle>
           <p className="text-slate-600">Sign in to your account</p>
         </CardHeader>
@@ -118,9 +120,9 @@ export default function Login() {
           </form>
           
           <div className="mt-6 text-center">
-            <p className="text-xs text-slate-500">
+            {/* <p className="text-xs text-slate-500">
               Contact admin for account creation
-            </p>
+            </p> */}
           </div>
         </CardContent>
       </Card>
