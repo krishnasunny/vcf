@@ -34,6 +34,7 @@ The application uses a normalized PostgreSQL schema with the following key entit
 - **Fundraising**: Investment rounds and funding history
 - **Company Revenue**: Revenue tracking and financial metrics
 - **Admin Snapshots**: Administrative tracking data
+- **Brain Trust Mentors**: Mentor profiles with contact information and expertise descriptions
 
 ## Key Components
 
@@ -46,6 +47,7 @@ The application uses a normalized PostgreSQL schema with the following key entit
 ### Admin Dashboard
 - **Company Management**: Create, read, update, and delete portfolio companies
 - **User Management**: Create accounts for portfolio companies (no self-registration)
+- **Brain Trust Management**: Create, edit, and delete mentor profiles with contact information
 - **Data Analytics**: View aggregate portfolio metrics and performance
 - **Full Access Control**: Complete CRUD operations on all entities
 
@@ -53,6 +55,7 @@ The application uses a normalized PostgreSQL schema with the following key entit
 - **Company Profile Management**: Update company information and founder details
 - **Revenue Reporting**: Track and submit revenue data across quarters
 - **Fundraising Management**: Record and manage funding rounds
+- **Brain Trust Resources**: Browse and connect with mentors from the Brain Trust network
 - **Performance Metrics**: View company-specific KPIs and growth metrics
 
 ### UI Components
