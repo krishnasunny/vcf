@@ -115,6 +115,17 @@ export const adminSnapshots = pgTable("admin_snapshots", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+export const brainTrustMentors = pgTable("brain_trust_mentors", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  name: text("name").notNull(),
+  headshot: text("headshot"), // URL to uploaded image
+  phone: text("phone"),
+  linkedInUrl: text("linkedin_url"),
+  description: text("description"), // Rich text description
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ one }) => ({
   founder: one(founders, {
@@ -194,6 +205,12 @@ export const insertAdminSnapshotSchema = createInsertSchema(adminSnapshots).omit
   updatedAt: true,
 });
 
+export const insertBrainTrustMentorSchema = createInsertSchema(brainTrustMentors).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -207,3 +224,5 @@ export type CompanyRevenue = typeof companyRevenue.$inferSelect;
 export type InsertCompanyRevenue = z.infer<typeof insertCompanyRevenueSchema>;
 export type AdminSnapshot = typeof adminSnapshots.$inferSelect;
 export type InsertAdminSnapshot = z.infer<typeof insertAdminSnapshotSchema>;
+export type BrainTrustMentor = typeof brainTrustMentors.$inferSelect;
+export type InsertBrainTrustMentor = z.infer<typeof insertBrainTrustMentorSchema>;

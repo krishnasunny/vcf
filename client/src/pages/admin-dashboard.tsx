@@ -10,6 +10,10 @@ import { CreateCompanyModal } from "@/components/company/CreateCompanyModal";
 import { ViewCompanyModal } from "@/components/company/ViewCompanyModal";
 import { EditCompanyModal } from "@/components/company/EditCompanyModal";
 import { CompanyTable } from "@/components/company/CompanyTable";
+import { MentorTable } from "@/components/brain-trust/MentorTable";
+import { CreateMentorModal } from "@/components/brain-trust/CreateMentorModal";
+import { EditMentorModal } from "@/components/brain-trust/EditMentorModal";
+import { ViewMentorModal } from "@/components/brain-trust/ViewMentorModal";
 
 export default function AdminDashboard() {
   const { user, logout } = useAuth();
@@ -17,9 +21,20 @@ export default function AdminDashboard() {
   const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(null);
   const [showViewModal, setShowViewModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  
+  // Brain Trust mentor state
+  const [showCreateMentorModal, setShowCreateMentorModal] = useState(false);
+  const [selectedMentorId, setSelectedMentorId] = useState<string | null>(null);
+  const [showViewMentorModal, setShowViewMentorModal] = useState(false);
+  const [showEditMentorModal, setShowEditMentorModal] = useState(false);
 
   const { data: companies, isLoading } = useQuery({
     queryKey: ["/api/companies"],
+    staleTime: 300000,
+  });
+
+  const { data: mentors = [], isLoading: mentorsLoading } = useQuery({
+    queryKey: ['/api/brain-trust-mentors'],
     staleTime: 300000,
   });
 
@@ -38,6 +53,26 @@ export default function AdminDashboard() {
   const handleEditCompany = (companyId: string) => {
     setSelectedCompanyId(companyId);
     setShowEditModal(true);
+  };
+
+  // Brain Trust mentor handlers
+  const handleViewMentor = (mentorId: string) => {
+    setSelectedMentorId(mentorId);
+    setShowViewMentorModal(true);
+  };
+
+  const handleEditMentor = (mentorId: string) => {
+    setSelectedMentorId(mentorId);
+    setShowEditMentorModal(true);
+  };
+
+  const handleDeleteMentor = (mentorId: string) => {
+    // Add delete logic here if needed
+    console.log("Delete mentor:", mentorId);
+  };
+
+  const handleCreateMentor = () => {
+    setShowCreateMentorModal(true);
   };
 
   return (
@@ -141,8 +176,9 @@ export default function AdminDashboard() {
         <Card>
           <Tabs defaultValue="companies" className="w-full">
             <CardHeader>
-              <TabsList className="grid w-full grid-cols-4">
+              <TabsList className="grid w-full grid-cols-5">
                 <TabsTrigger value="companies">Companies</TabsTrigger>
+                <TabsTrigger value="brain-trust">Brain Trust</TabsTrigger>
                 <TabsTrigger value="fundraising">Fundraising</TabsTrigger>
                 <TabsTrigger value="revenue">Revenue Tracking</TabsTrigger>
                 <TabsTrigger value="users">User Management</TabsTrigger>
@@ -164,6 +200,18 @@ export default function AdminDashboard() {
                   isLoading={isLoading} 
                   onViewCompany={handleViewCompany}
                   onEditCompany={handleEditCompany}
+                />
+              </TabsContent>
+
+              <TabsContent value="brain-trust" className="space-y-4">
+                <MentorTable
+                  mentors={mentors}
+                  isLoading={mentorsLoading}
+                  onViewMentor={handleViewMentor}
+                  onEditMentor={handleEditMentor}
+                  onDeleteMentor={handleDeleteMentor}
+                  onCreateMentor={handleCreateMentor}
+                  showActions={true}
                 />
               </TabsContent>
               
@@ -204,6 +252,23 @@ export default function AdminDashboard() {
         open={showEditModal}
         onOpenChange={setShowEditModal}
         companyId={selectedCompanyId}
+      />
+
+      <CreateMentorModal
+        open={showCreateMentorModal}
+        onOpenChange={setShowCreateMentorModal}
+      />
+
+      <EditMentorModal
+        open={showEditMentorModal}
+        onOpenChange={setShowEditMentorModal}
+        mentorId={selectedMentorId}
+      />
+
+      <ViewMentorModal
+        open={showViewMentorModal}
+        onOpenChange={setShowViewMentorModal}
+        mentorId={selectedMentorId}
       />
     </div>
   );

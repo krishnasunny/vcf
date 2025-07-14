@@ -10,11 +10,15 @@ import { AddRevenueModal } from "@/components/revenue/AddRevenueModal";
 import { FundraisingCards } from "@/components/fundraising/FundraisingCards";
 import { AddFundraisingModal } from "@/components/fundraising/AddFundraisingModal";
 import { CompanyProfileForm } from "@/components/company/CompanyProfileForm";
+import { MentorTable } from "@/components/brain-trust/MentorTable";
+import { ViewMentorModal } from "@/components/brain-trust/ViewMentorModal";
 
 export default function PortfolioDashboard() {
   const { user, logout } = useAuth();
   const [showRevenueModal, setShowRevenueModal] = useState(false);
   const [showFundraisingModal, setShowFundraisingModal] = useState(false);
+  const [showViewMentorModal, setShowViewMentorModal] = useState(false);
+  const [selectedMentorId, setSelectedMentorId] = useState<string | null>(null);
 
   const { data: companyData, isLoading } = useQuery({
     queryKey: ["/api/my-company"],
@@ -36,6 +40,11 @@ export default function PortfolioDashboard() {
     staleTime: 300000,
   });
 
+  const { data: mentors = [], isLoading: mentorsLoading } = useQuery({
+    queryKey: ['/api/brain-trust-mentors'],
+    staleTime: 300000,
+  });
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
@@ -46,6 +55,11 @@ export default function PortfolioDashboard() {
       </div>
     );
   }
+
+  const handleViewMentor = (mentorId: string) => {
+    setSelectedMentorId(mentorId);
+    setShowViewMentorModal(true);
+  };
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -166,7 +180,7 @@ export default function PortfolioDashboard() {
                 <TabsTrigger value="profile">Company Profile</TabsTrigger>
                 <TabsTrigger value="revenue">Revenue Reports</TabsTrigger>
                 <TabsTrigger value="fundraising">Fundraising</TabsTrigger>
-                <TabsTrigger value="resources">Resources</TabsTrigger>
+                <TabsTrigger value="brain-trust">Brain Trust</TabsTrigger>
               </TabsList>
             </CardHeader>
             
@@ -199,9 +213,18 @@ export default function PortfolioDashboard() {
                 <FundraisingCards fundraising={fundraising || []} />
               </TabsContent>
               
-              <TabsContent value="resources" className="space-y-4">
-                <div className="text-center py-8">
-                  <p className="text-slate-600">Resources and support coming soon...</p>
+              <TabsContent value="brain-trust" className="space-y-4">
+                <div className="space-y-4">
+                  <div className="text-center py-4 border-b">
+                    <h3 className="text-lg font-semibold text-slate-800">Brain Trust Mentors</h3>
+                    <p className="text-sm text-slate-600">Connect with experienced mentors from our network</p>
+                  </div>
+                  <MentorTable
+                    mentors={mentors}
+                    isLoading={mentorsLoading}
+                    onViewMentor={handleViewMentor}
+                    showActions={false}
+                  />
                 </div>
               </TabsContent>
             </CardContent>
@@ -219,6 +242,12 @@ export default function PortfolioDashboard() {
         open={showFundraisingModal}
         onOpenChange={setShowFundraisingModal}
         companyId={company?.id}
+      />
+
+      <ViewMentorModal
+        open={showViewMentorModal}
+        onOpenChange={setShowViewMentorModal}
+        mentorId={selectedMentorId}
       />
     </div>
   );

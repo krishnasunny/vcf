@@ -23,6 +23,13 @@ import {
   deleteRevenue 
 } from "./controllers/revenueController";
 import { getFounderByCompany, updateFounder } from "./controllers/founderController";
+import { 
+  getAllBrainTrustMentors, 
+  getBrainTrustMentorById, 
+  createBrainTrustMentor, 
+  updateBrainTrustMentor, 
+  deleteBrainTrustMentor 
+} from "./controllers/brainTrustController";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth routes
@@ -54,6 +61,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/companies/:companyId/revenue", authenticateToken, requireAdminOrOwnCompany, createRevenue);
   app.put("/api/revenue/:id", authenticateToken, requireAdminOrOwnCompany, updateRevenue);
   app.delete("/api/revenue/:id", authenticateToken, requireAdminOrOwnCompany, deleteRevenue);
+
+  // Brain Trust mentor routes
+  app.get("/api/brain-trust-mentors", authenticateToken, getAllBrainTrustMentors);
+  app.get("/api/brain-trust-mentors/:id", authenticateToken, getBrainTrustMentorById);
+  app.post("/api/brain-trust-mentors", authenticateToken, requireRole("ADMIN"), createBrainTrustMentor);
+  app.put("/api/brain-trust-mentors/:id", authenticateToken, requireRole("ADMIN"), updateBrainTrustMentor);
+  app.delete("/api/brain-trust-mentors/:id", authenticateToken, requireRole("ADMIN"), deleteBrainTrustMentor);
 
   const httpServer = createServer(app);
   return httpServer;

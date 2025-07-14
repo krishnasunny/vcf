@@ -5,6 +5,7 @@ import {
   fundraising, 
   companyRevenue, 
   adminSnapshots,
+  brainTrustMentors,
   type User, 
   type InsertUser,
   type Founder,
@@ -16,7 +17,9 @@ import {
   type CompanyRevenue,
   type InsertCompanyRevenue,
   type AdminSnapshot,
-  type InsertAdminSnapshot
+  type InsertAdminSnapshot,
+  type BrainTrustMentor,
+  type InsertBrainTrustMentor
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and } from "drizzle-orm";
@@ -56,6 +59,13 @@ export interface IStorage {
   getAdminSnapshotByCompanyId(companyId: string): Promise<AdminSnapshot | undefined>;
   createAdminSnapshot(snapshot: InsertAdminSnapshot): Promise<AdminSnapshot>;
   updateAdminSnapshot(id: string, snapshot: Partial<InsertAdminSnapshot>): Promise<AdminSnapshot>;
+  
+  // Brain Trust mentor operations
+  getAllBrainTrustMentors(): Promise<BrainTrustMentor[]>;
+  getBrainTrustMentorById(id: string): Promise<BrainTrustMentor | undefined>;
+  createBrainTrustMentor(mentor: InsertBrainTrustMentor): Promise<BrainTrustMentor>;
+  updateBrainTrustMentor(id: string, mentor: Partial<InsertBrainTrustMentor>): Promise<BrainTrustMentor>;
+  deleteBrainTrustMentor(id: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -190,6 +200,34 @@ export class DatabaseStorage implements IStorage {
       .where(eq(adminSnapshots.id, id))
       .returning();
     return updatedSnapshot;
+  }
+
+  // Brain Trust mentor operations
+  async getAllBrainTrustMentors(): Promise<BrainTrustMentor[]> {
+    return await db.select().from(brainTrustMentors);
+  }
+
+  async getBrainTrustMentorById(id: string): Promise<BrainTrustMentor | undefined> {
+    const [mentor] = await db.select().from(brainTrustMentors).where(eq(brainTrustMentors.id, id));
+    return mentor || undefined;
+  }
+
+  async createBrainTrustMentor(mentor: InsertBrainTrustMentor): Promise<BrainTrustMentor> {
+    const [createdMentor] = await db.insert(brainTrustMentors).values(mentor).returning();
+    return createdMentor;
+  }
+
+  async updateBrainTrustMentor(id: string, mentor: Partial<InsertBrainTrustMentor>): Promise<BrainTrustMentor> {
+    const [updatedMentor] = await db
+      .update(brainTrustMentors)
+      .set({ ...mentor, updatedAt: new Date() })
+      .where(eq(brainTrustMentors.id, id))
+      .returning();
+    return updatedMentor;
+  }
+
+  async deleteBrainTrustMentor(id: string): Promise<void> {
+    await db.delete(brainTrustMentors).where(eq(brainTrustMentors.id, id));
   }
 }
 
