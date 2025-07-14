@@ -117,8 +117,8 @@ export const ComprehensiveEditCompanyModal = ({ open, onOpenChange, companyId }:
   const queryClient = useQueryClient();
   
   const { data: company, isLoading } = useQuery({
-    queryKey: ["/api/companies", companyId],
-    enabled: !!companyId,
+    queryKey: [`/api/companies/${companyId}`],
+    enabled: !!companyId && open,
   });
 
   const form = useForm<EditCompanyForm>({
@@ -207,15 +207,12 @@ export const ComprehensiveEditCompanyModal = ({ open, onOpenChange, companyId }:
     mutationFn: async (data: EditCompanyForm) => {
       if (!companyId) throw new Error("Company ID is required");
       
-      const response = await apiRequest(`/api/companies/${companyId}`, {
-        method: "PATCH",
-        body: JSON.stringify(data),
-      });
+      const response = await apiRequest("PATCH", `/api/companies/${companyId}`, data);
       return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/companies"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/companies", companyId] });
+      queryClient.invalidateQueries({ queryKey: [`/api/companies/${companyId}`] });
       toast({
         title: "Success",
         description: "Company updated successfully",
@@ -427,8 +424,8 @@ export const ComprehensiveEditCompanyModal = ({ open, onOpenChange, companyId }:
                           <FormControl>
                             <Input 
                               type="number" 
-                              {...field}
-                              onChange={(e) => field.onChange(parseInt(e.target.value))}
+                              value={field.value || ""}
+                              onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
                             />
                           </FormControl>
                           <FormMessage />
@@ -446,8 +443,8 @@ export const ComprehensiveEditCompanyModal = ({ open, onOpenChange, companyId }:
                             <Input 
                               type="number" 
                               step="0.01"
-                              {...field}
-                              onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                              value={field.value || ""}
+                              onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : undefined)}
                             />
                           </FormControl>
                           <FormMessage />
@@ -465,8 +462,8 @@ export const ComprehensiveEditCompanyModal = ({ open, onOpenChange, companyId }:
                             <Input 
                               type="number" 
                               step="0.01"
-                              {...field}
-                              onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                              value={field.value || ""}
+                              onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : undefined)}
                             />
                           </FormControl>
                           <FormMessage />
@@ -484,8 +481,8 @@ export const ComprehensiveEditCompanyModal = ({ open, onOpenChange, companyId }:
                             <Input 
                               type="number" 
                               step="0.01"
-                              {...field}
-                              onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                              value={field.value || ""}
+                              onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : undefined)}
                             />
                           </FormControl>
                           <FormMessage />
@@ -503,8 +500,8 @@ export const ComprehensiveEditCompanyModal = ({ open, onOpenChange, companyId }:
                             <Input 
                               type="number" 
                               step="0.1"
-                              {...field}
-                              onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                              value={field.value || ""}
+                              onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : undefined)}
                             />
                           </FormControl>
                           <FormMessage />
@@ -522,8 +519,8 @@ export const ComprehensiveEditCompanyModal = ({ open, onOpenChange, companyId }:
                             <Input 
                               type="number" 
                               step="0.01"
-                              {...field}
-                              onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                              value={field.value || ""}
+                              onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : undefined)}
                             />
                           </FormControl>
                           <FormMessage />
@@ -540,8 +537,8 @@ export const ComprehensiveEditCompanyModal = ({ open, onOpenChange, companyId }:
                           <FormControl>
                             <Input 
                               type="number" 
-                              {...field}
-                              onChange={(e) => field.onChange(parseInt(e.target.value) || undefined)}
+                              value={field.value || ""}
+                              onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
                             />
                           </FormControl>
                           <FormMessage />
