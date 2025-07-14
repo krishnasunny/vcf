@@ -1,0 +1,161 @@
+Build a full-stack VC portfolio management platform using:
+- Backend: Express.js (MVC) with Prisma ORM and PostgreSQL
+- Frontend: React (Vite) + Tailwind CSS
+- Authentication: JWT-based Role Access Control (ADMIN, PORTFOLIO_COMPANY)
+- Hosting/Dev: Replit AI or Bolt AI
+
+📌 PLATFORM FEATURES
+- ADMIN Panel:
+  - Create/manage portfolio companies (no self-signup)
+  - Full control over revenue reports, fundraising, and internal tracking
+
+
+- PORTFOLIO COMPANY Dashboard:
+  - View/update their profile, revenue, fundraising data
+  - Access perks, mentors, courses, community, and support
+  - Upload monthly reports, KPIs, and data room docs
+
+- Authentication & Access:
+  - Only ADMIN can create companies
+  - Portfolio Companies can only log in and manage their own data
+
+---
+FEATURES
+• Roles → ADMIN, PORTFOLIO_COMPANY (RBAC via JWT)
+• Only ADMIN can create User + PortfolioCompany records (no self‑signup)
+• PORTFOLIO_COMPANY can log in and read/update only its own founder‑side data
+• ADMIN has full CRUD on PortfolioCompany, Fundraising, AdminSnapshot, CompanyRevenue
+• Normalized revenue tracking split into a separate CompanyRevenue table
+
+PRISMA SCHEMA
+generator client { provider = "prisma-client-js" }
+
+datasource db { provider = "postgresql" url = env("DATABASE_URL") }
+
+enum Role             { ADMIN PORTFOLIO_COMPANY }
+enum IndustryType     { SAAS HARDWARE BIOTECH FINTECH OTHER }
+enum RoundType        { SAFE CONVERTIBLE EQUITY }
+enum CompanyStatus    { ACTIVE EXITED ON_HOLD }
+enum UpdateFrequency  { MONTHLY QUARTERLY ADHOC }
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(PORTFOLIO_COMPANY)
+  founder      Founder? @relation(fields: [founderId], references: [id])
+  founderId    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Founder {
+  id             String            @id @default(cuid())
+  firstName      String
+  lastName       String
+  phone          String?
+  linkedInUrl    String?
+  isWomanFounder Boolean           @default(false)
+  company        PortfolioCompany? @relation(fields: [companyId], references: [id])
+  companyId      String?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+}
+
+model PortfolioCompany {
+  id               String            @id @default(cuid())
+  legalName        String
+  aka              String?
+  countryReg       String
+  countyOps        String
+  website          String?
+  industryType     IndustryType
+  industryDetail   String?
+  vintageYear      Int
+  currentValuation Float?
+  cashInflow       Float?
+  cashOutflow      Float?
+  runwayMonths     Float?
+  monthlyBurn      Float?
+  teamSize         Int?
+  fundraising      Fundraising[]     @relation("CompanyFundraising")
+  adminSnapshot    AdminSnapshot?
+  revenues         CompanyRevenue[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+}
+
+model Fundraising {
+  id          String           @id @default(cuid())
+  roundYear   Int
+  amountUSD   Float
+  roundType   RoundType
+  coInvestors String?
+  notes2025   String?
+  company     PortfolioCompany @relation(fields: [companyId], references: [id], name: "CompanyFundraising")
+  companyId   String
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+model CompanyRevenue {
+  id               String           @id @default(cuid())
+  year             Int
+  arr              Float?
+  revenueQ1        Float?
+  revenueQ2        Float?
+  revenueQ3        Float?
+  revenueQ4        Float?
+  projectedRevenue Float?
+  actualRevenue    Float?
+  company          PortfolioCompany @relation(fields: [companyId], references: [id])
+  companyId        String
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+}
+
+model AdminSnapshot {
+  id                       String          @id @default(cuid())
+  status                   CompanyStatus   @default(ACTIVE)
+  investmentUSD            Float
+  investmentYear           Int
+  valuationAtInvestmentUSD Float
+  equityPercent            Float
+  cNoteAgreementDate       DateTime?
+  cNoteMaturityDate        DateTime?
+  pennyWarrantExpiry       DateTime?
+  millionWarrantExpiry     DateTime?
+  noteAction               String?
+  observationScore         Int?
+  pitchedSeriesA           Boolean?
+  seriesANotes             String?
+  significantGrowth        Boolean?
+  fastestGrowingPitch      Boolean?
+  irrCompanyBasis          Float?
+  workInProgress           String?
+  venturePartner           String?
+  dataroomUrl              String?
+  founderExperience        String?
+  warmIntroSource          String?
+  exitPotential            String?
+  riskFlags                String?
+  boardMembers             String?
+  safesOutstanding         String?
+  esopPoolSize             String?
+  lastCheckInDate          DateTime?
+  updateFrequency          UpdateFrequency @default(MONTHLY)
+  acceleratorAttended      String?
+  adminNotes               String?
+  portfolioCompany         PortfolioCompany @relation(fields: [companyId], references: [id])
+  companyId                String
+  createdAt                DateTime        @default(now())
+  updatedAt                DateTime        @updatedAt
+}
+
+
+🎯 Deliverables:
+- Full stack app with secure role-based access
+- Admin can manage all content
+- Portfolio company can only access/update own data
+- Modular architecture, API endpoints following MVC
+- Frontend with dashboards, forms, and tabbed sections for all features
