@@ -1,6 +1,12 @@
 import { Response } from "express";
 import { storage } from "../storage";
-import { insertPortfolioCompanySchema, insertFounderSchema } from "@shared/schema";
+import { 
+  insertPortfolioCompanySchema, 
+  insertFounderSchema, 
+  insertFundraisingSchema, 
+  insertCompanyRevenueSchema,
+  insertAdminSnapshotSchema 
+} from "@shared/schema";
 import { z } from "zod";
 import { AuthenticatedRequest } from "../middleware/auth";
 
@@ -60,10 +66,73 @@ export const createCompany = async (req: AuthenticatedRequest, res: Response) =>
 export const updateCompany = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { id } = req.params;
-    const updateData = insertPortfolioCompanySchema.partial().parse(req.body);
-    
-    const company = await storage.updatePortfolioCompany(id, updateData);
-    res.json(company);
+    const updateData = req.body;
+
+    // Update portfolio company
+    if (updateData.legalName || updateData.aka || updateData.countryReg) {
+      const companyData = insertPortfolioCompanySchema.partial().parse(updateData);
+      await storage.updatePortfolioCompany(id, companyData);
+    }
+
+    // Update founder if provided
+    if (updateData.founder) {
+      const founders = await storage.getFoundersByCompanyId(id);
+      if (founders.length > 0) {
+        const founderId = founders[0].id;
+        const founderData = insertFounderSchema.partial().parse(updateData.founder);
+        await storage.updateFounder(founderId, founderData);
+      } else {
+        // Create new founder if none exists
+        const founderData = insertFounderSchema.parse({
+          ...updateData.founder,
+          companyId: id,
+        });
+        await storage.createFounder(founderData);
+      }
+    }
+
+    // Update fundraising rounds
+    if (updateData.fundraising && Array.isArray(updateData.fundraising)) {
+      // For simplicity, we'll delete existing rounds and create new ones
+      // In a real app, you'd want to be more sophisticated about this
+      for (const fundraisingRound of updateData.fundraising) {
+        const fundraisingData = insertFundraisingSchema.parse({
+          ...fundraisingRound,
+          companyId: id,
+        });
+        await storage.createFundraising(fundraisingData);
+      }
+    }
+
+    // Update revenue data
+    if (updateData.revenue && Array.isArray(updateData.revenue)) {
+      for (const revenueData of updateData.revenue) {
+        const revenueInfo = insertCompanyRevenueSchema.parse({
+          ...revenueData,
+          companyId: id,
+        });
+        await storage.createCompanyRevenue(revenueInfo);
+      }
+    }
+
+    // Update admin snapshot
+    if (updateData.adminSnapshot) {
+      const existingSnapshot = await storage.getAdminSnapshotByCompanyId(id);
+      if (existingSnapshot) {
+        const adminData = insertAdminSnapshotSchema.partial().parse(updateData.adminSnapshot);
+        await storage.updateAdminSnapshot(existingSnapshot.id, adminData);
+      } else {
+        const adminData = insertAdminSnapshotSchema.parse({
+          ...updateData.adminSnapshot,
+          companyId: id,
+        });
+        await storage.createAdminSnapshot(adminData);
+      }
+    }
+
+    // Get updated company with all relations
+    const updatedCompany = await storage.getPortfolioCompanyById(id);
+    res.json(updatedCompany);
   } catch (error) {
     if (error instanceof z.ZodError) {
       return res.status(400).json({ message: "Invalid input", errors: error.errors });

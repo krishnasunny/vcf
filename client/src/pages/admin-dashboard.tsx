@@ -8,7 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { ChartLine, Building, DollarSign, TrendingUp, Percent, Plus } from "lucide-react";
 import { CreateCompanyModal } from "@/components/company/CreateCompanyModal";
 import { ViewCompanyModal } from "@/components/company/ViewCompanyModal";
-import { EditCompanyModal } from "@/components/company/EditCompanyModal";
+import { ComprehensiveEditCompanyModal } from "@/components/company/ComprehensiveEditCompanyModal";
 import { CompanyTable } from "@/components/company/CompanyTable";
 import { MentorTable } from "@/components/brain-trust/MentorTable";
 import { CreateMentorModal } from "@/components/brain-trust/CreateMentorModal";
@@ -248,7 +248,7 @@ export default function AdminDashboard() {
         companyId={selectedCompanyId}
       />
       
-      <EditCompanyModal
+      <ComprehensiveEditCompanyModal
         open={showEditModal}
         onOpenChange={setShowEditModal}
         companyId={selectedCompanyId}

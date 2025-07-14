@@ -118,7 +118,22 @@ export class DatabaseStorage implements IStorage {
 
   async getPortfolioCompanyById(id: string): Promise<PortfolioCompany | undefined> {
     const [company] = await db.select().from(portfolioCompanies).where(eq(portfolioCompanies.id, id));
-    return company || undefined;
+    
+    if (!company) return undefined;
+    
+    // Get related data
+    const founder = await this.getFoundersByCompanyId(id);
+    const fundraising = await this.getFundraisingByCompanyId(id);
+    const revenue = await this.getRevenueByCompanyId(id);
+    const adminSnapshot = await this.getAdminSnapshotByCompanyId(id);
+    
+    return {
+      ...company,
+      founder: founder[0] || undefined,
+      fundraising,
+      revenue,
+      adminSnapshot,
+    };
   }
 
   async createPortfolioCompany(company: InsertPortfolioCompany): Promise<PortfolioCompany> {
